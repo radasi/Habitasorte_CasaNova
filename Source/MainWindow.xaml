@@ -5,25 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Habitasorte"
         mc:Ignorable="d"
-        Title="HABITASORTE" Height="620" Width="850" MinHeight="620" MinWidth="850" Activated="Window_Activated" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="HABITASORTE" Height="620" Width="850" MinHeight="360" MinWidth="425" Activated="Window_Activated" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Window.Resources>
     </Window.Resources>
     <Grid>
 
-        <Image HorizontalAlignment="Left" Height="70" Margin="10,10,0,0" VerticalAlignment="Top" Width="205" Source="Resources/logotipo.jpg"/>
-        <Label Content="{Binding Nome}" Margin="220,10,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontWeight="Bold" HorizontalContentAlignment="Right" Padding="0">
-            <Label.Effect>
-                <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
-            </Label.Effect>
-        </Label>
-        <Label x:Name="lblEtapaSorteio" Content="Etapa do Sorteio" Margin="220,48,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontStyle="Italic" HorizontalContentAlignment="Right" Padding="0">
-            <Label.Effect>
-                <DropShadowEffect BlurRadius="1" ShadowDepth="1" Opacity="0.1"/>
-            </Label.Effect>
-        </Label>
         <TabControl Margin="10,95,10,10">
             <TabControl.Effect>
-                <DropShadowEffect BlurRadius="5" ShadowDepth="3" Opacity="0.5"/>
+                <DropShadowEffect BlurRadius="6" ShadowDepth="3" Opacity="0.5"/>
             </TabControl.Effect>
 
             <!-- ETAPA DE CONFIGURAÇÃO -->
@@ -33,22 +22,22 @@
                 <Grid x:Name="grdCadastro">
                     <Grid x:Name="grdFormCadastro">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="235*"/>
-                            <ColumnDefinition Width="37*"/>
+                            <ColumnDefinition Width="197*"/>
+                            <ColumnDefinition Width="30*"/>
+                            <ColumnDefinition Width="478*"/>
+                            <ColumnDefinition Width="111*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Nome do Sorteio de Empreendimento" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
-                        <TextBox x:Name="txtNomeSorteio" Height="23" TextWrapping="Wrap" Text="{Binding Nome, ValidatesOnDataErrors=True}" Margin="10,36,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
-                        <Label Content="Faixa de Renda A - 100% de Subsídio" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
-                        <TextBox x:Name="txtFaixaA" Height="23" TextWrapping="Wrap" Text="{Binding FaixaA, ValidatesOnDataErrors=True}" Margin="10,90,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2" GotFocus="gridArquivoImportacaoFaixaA"/>
-                        <CheckBox x:Name="chkBoxEmpreendimento2" Content="Faixa de Renda B - 75% de Subsídio" IsChecked="{Binding FaixaBAtivo}" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="txtFaixaB" Height="23" TextWrapping="Wrap" Text="{Binding FaixaB, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaBAtivo}" Margin="10,144,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2"  GotFocus="gridArquivoImportacaoFaixaB"/>
-                        <CheckBox x:Name="chkBoxEmpreendimento3" Content="Faixa de Renda C - 60% de Subsídio" IsChecked="{Binding FaixaCAtivo}" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="txtFaixaC" Height="23" TextWrapping="Wrap" Text="{Binding FaixaC, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaCAtivo}" Margin="10,198,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2"  GotFocus="gridArquivoImportacaoFaixaC"/>
-                        <CheckBox x:Name="chkBoxEmpreendimento4" Content="Faixa de Renda D - 50% de Subsídio" IsChecked="{Binding FaixaDAtivo}" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="txtFaixaD" Height="23" TextWrapping="Wrap" Text="{Binding FaixaD, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaDAtivo}" Margin="10,252,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2"  GotFocus="gridArquivoImportacaoFaixaD"/>
-                        <CheckBox x:Name="chkBoxEmpreendimento5" Content="Faixa de Renda E - 25% de Subsídio" IsChecked="{Binding FaixaEAtivo}" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="txtFaixaE" Height="23" TextWrapping="Wrap" Text="{Binding FaixaE, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaEAtivo}" Margin="10,307,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="2"  GotFocus="gridArquivoImportacaoFaixaE"/>
-                        <Button x:Name="btnAtualizarCadastro" Content="Atualizar Dados" Height="24" Margin="10,345,10,0" VerticalAlignment="Top" Click="buttonAtualizarCadastro_Click" Grid.ColumnSpan="2"/>
+                        <Label Content="Nome do Sorteio de Empreendimento" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="txtNomeSorteio" Height="23" TextWrapping="Wrap" Text="{Binding Nome, ValidatesOnDataErrors=True}" Margin="10,36,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="4"/>
+                        <Label Content="Faixa de Renda A - 100% de Subsídio" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Padding="0,5,5,5" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="txtFaixaA" Height="23" TextWrapping="Wrap" Text="{Binding FaixaA, ValidatesOnDataErrors=True}" Margin="10,90,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="4" GotFocus="gridArquivoImportacaoFaixaA"/>
+                        <CheckBox x:Name="chkBoxEmpreendimento2" Content="Faixa de Renda B - 75% de Subsídio" IsChecked="{Binding FaixaBAtivo}" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="txtFaixaB" Height="23" TextWrapping="Wrap" Text="{Binding FaixaB, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaBAtivo}" Margin="10,144,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="4"  GotFocus="gridArquivoImportacaoFaixaB"/>
+                        <CheckBox x:Name="chkBoxEmpreendimento3" Content="Faixa de Renda C - 50% de Subsídio" IsChecked="{Binding FaixaCAtivo}" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <TextBox x:Name="txtFaixaC" Height="23" TextWrapping="Wrap" Text="{Binding FaixaC, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaCAtivo}" Margin="10,198,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="4"  GotFocus="gridArquivoImportacaoFaixaC"/>
+                        <CheckBox x:Name="chkBoxEmpreendimento4" Content="Faixa de Renda D - 26,31% de Subsídio" IsChecked="{Binding FaixaDAtivo}" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="226"/>
+                        <TextBox x:Name="txtFaixaD" Height="23" TextWrapping="Wrap" Text="{Binding FaixaD, ValidatesOnDataErrors=True}" IsEnabled="{Binding FaixaDAtivo}" Margin="10,252,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="4"  GotFocus="gridArquivoImportacaoFaixaD"/>
+                        <Button x:Name="btnAtualizarCadastro" Content="Atualizar Dados" Height="24" Margin="10,345,10,0" VerticalAlignment="Top" Click="buttonAtualizarCadastro_Click" Grid.ColumnSpan="4"/>
                     </Grid>
                     <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24" Grid.ColumnSpan="3">
                         <Button x:Name="AbtnExcluirDados" Content="Excluir Dados e Fechar Aplicação" Margin="0,0,0,0" HorizontalAlignment="Left" Click="btnExcluirDados_Click"/>
@@ -102,7 +91,7 @@
             </TabItem>
 
             <!-- ETAPA DE QUANTIDADES -->
-            <TabItem x:Name="tabQuantidades" Header="3. Definição das Quantidades das Listas">
+            <TabItem x:Name="tabQuantidades" Header="3. Vagas por Listas" Height="22" VerticalAlignment="Top">
                 <Grid x:Name="grdQuantidades">
                     <Grid VerticalAlignment="Top" Margin="10,10,29,0">
                         <Grid.ColumnDefinitions>
@@ -187,129 +176,50 @@
 
             <!-- ETAPA DE SORTEIO -->
             <TabItem x:Name="tabSorteio" Header="4. Sorteio em Andamento">
-                <Grid Grid.Column="1" x:Name="grdSorteio">
+                <Grid Grid.Column="0" x:Name="grdSorteio">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="600"/>
+                            <ColumnDefinition Width="0"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="70" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Margin="10,10,10,0">
-                                <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray">
-                                    <Label Content="Listas de Sorteio" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="15"/>
-                                </Border>
-                            </Grid>
-                            <ListView x:Name="lstSorteioListasSorteio" Grid.Row="1" ItemsSource="{Binding Listas}" Margin="10,0,10,35" Grid.RowSpan="2">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListViewItem}">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="BorderBrush" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Setter Property="Padding" Value="2"/>
-                                        <Setter Property="Focusable" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Sorteada}" Value="true">
-                                                <Setter Property="Background" Value="LightGreen"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Publicada}" Value="True">
-                                                <Setter Property="Background" Value="LightBlue"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="60"/>
-                                                <ColumnDefinition Width="20"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Button Grid.Column="0" Content="SALVAR" Click="btnSalvarLista_Click">
-                                                <Button.Style>
-                                                    <Style TargetType="{x:Type Button}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Sorteada}" Value="true">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
-                                            <Image Grid.Column="1" Source="Resources/certo.png" Width="20" Height="20">
-                                                <Image.Style>
-                                                    <Style TargetType="{x:Type Image}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Sorteada}" Value="true">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Image.Style>
-                                            </Image>
-                                            <Label Grid.Column="2" Content="{Binding NomeFormatado}" HorizontalContentAlignment="Left"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
                         <Grid Grid.Column="1">
                             <Grid>
-                                <Grid VerticalAlignment="Top" Margin="10,10,10,0" Height="135">
+                                <Grid VerticalAlignment="Top" Margin="10,10,10,0" Height="190">
                                     <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="10"/>
-                                    <Label x:Name="lblSorteioProximaLista" Content="Próxima lista:" Margin="10,10,10,0" VerticalAlignment="Top" Height="25" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="0">
+                                    <Label x:Name="lblStatusSorteio" VerticalAlignment="Top" Height="40" Margin="10,0" Padding="0" FontWeight="Bold" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                    <Label Margin="0,50,0,0" VerticalAlignment="Top" Height="50" FontSize="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontWeight="Bold" FontFamily="Courier New" Background="Black" Foreground="Aquamarine" Content="CPF               NOME                         INSCRIÇÃO">
                                         <Label.Effect>
                                             <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
                                         </Label.Effect>
                                     </Label>
-                                    <Label x:Name="lblSorteioListaAtual" Content="Lista atual:" Margin="10,10,10,0" VerticalAlignment="Top" Height="25" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="0" Visibility="Hidden">
-                                        <Label.Effect>
-                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
-                                        </Label.Effect>
-                                    </Label>
-                                    <Label Content="{Binding ProximaLista.NomeFormatado}" Margin="10,40,10,0" VerticalAlignment="Top" Height="40" FontSize="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold">
-                                        <Label.Effect>
-                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
-                                        </Label.Effect>
-                                    </Label>
-                                    <Label Content="{Binding ProximaLista.VagasText}" Margin="10,85,0,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Left" FontSize="20" VerticalContentAlignment="Center" FontStyle="Italic">
-                                        <Label.Effect>
-                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
-                                        </Label.Effect>
-                                    </Label>
-                                    <Label Content="{Binding ProximaLista.CandidatosText}" Margin="0,85,10,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" FontSize="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontStyle="Italic">
+                                    <Label x:Name="lblNomeSorteado" Margin="0,100,0,0" VerticalAlignment="Top" Height="90" FontSize="70" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontWeight="Bold" FontFamily="Courier New" Background="Black" Foreground="Lime" Content="">
                                         <Label.Effect>
                                             <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
                                         </Label.Effect>
                                     </Label>
                                 </Grid>
                                 <Grid x:Name="grdIniciarSorteio">
-                                    <CheckBox x:Name="chkSementePersonalizada" Content="Utilizar semente de sorteio personalizada?" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
-                                    <TextBox x:Name="txtSementePersonalizada"  Height="23" Margin="10,170,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" VerticalContentAlignment="Center"/>
-                                    <Button x:Name="btnSortearProximaLista" Content="Sortear Próxima Lista!" Margin="10,198,10,0" VerticalAlignment="Top" Height="50" FontSize="15" Click="buttonSortearProximaLista_Click"/>
+                                    <CheckBox x:Name="chkSementePersonalizada" Content="Utilizar semente de sorteio personalizada?" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                                    <TextBox x:Name="txtSementePersonalizada"  Height="23" Margin="10,240,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" VerticalContentAlignment="Center"/>
+                                    <Button x:Name="btnSortearProximaLista" Content="Sortear Próximo da Lista!" Margin="10,280,10,0" VerticalAlignment="Top" Height="50" FontSize="15" Click="buttonSortearProximaLista_Click"/>
                                 </Grid>
                             </Grid>
-                            <Grid Margin="10,253,10,34">
+                            <Grid Margin="10,350,10,34">
                                 <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="10"/>
                                 <Grid x:Name="grdSorteioEmAndamento" IsEnabled="False">
-                                    <ProgressBar x:Name="pgrSorteio" VerticalAlignment="Top" Height="20" Margin="10,10,10,0"/>
-                                    <Label x:Name="lblStatusSorteio" VerticalAlignment="Top" Height="40" Margin="10,35,10,0" Padding="0" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60*"/>
+                                        <ColumnDefinition Width="139*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ProgressBar x:Name="pgrSorteio" VerticalAlignment="Top" Height="20" Margin="10,10,10,0" Grid.ColumnSpan="2"/>
+
                                 </Grid>
-                                <TextBox x:Name="txtLogSorteio" Margin="10,80,10,10" IsReadOnly="True" VerticalScrollBarVisibility="Visible" FontSize="15"/>
+                                <TextBox x:Name="txtLogSorteio" Margin="10,45,10,10" IsReadOnly="True" VerticalScrollBarVisibility="Visible" FontSize="16" FontFamily="Courier New" TextAlignment="Left"/>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24">
-                        <Button x:Name="btnRecuarSorteio" Content="&lt;&lt; Recuar" Margin="0,0,0,0" HorizontalAlignment="Left" Width="100" Click="buttonRecuarSorteio_Click"/>
+                    <Grid Margin="0,0,10,5" VerticalAlignment="Bottom" Height="24">
+                        <Button x:Name="btnRecuarSorteio" Content="&lt;&lt; Recuar" Margin="10,0,0,0" HorizontalAlignment="Left" Width="100" Click="buttonRecuarSorteio_Click"/>
                         <Button x:Name="btnAvancarSorteio" Content="Avançar &gt;&gt;" Margin="0,0,0,0" HorizontalAlignment="Right" Width="100" Click="buttonAvancarSorteio_Click"/>
                     </Grid>
                 </Grid>
@@ -341,7 +251,92 @@
                     </Grid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Listas">
+                <Grid Grid.Column="0">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="70" />
+                    </Grid.RowDefinitions>
+                    <ListView x:Name="lstSorteioListasSorteio" Grid.Row="1" ItemsSource="{Binding Listas}" Margin="10,0,10,35" Grid.RowSpan="2">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="BorderBrush" Value="White"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Focusable" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                        <Setter Property="Background" Value="LightGreen"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Publicada}" Value="True">
+                                        <Setter Property="Background" Value="LightBlue"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="SALVAR" Click="btnSalvarLista_Click">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Image Grid.Column="1" Source="Resources/certo.png" Width="20" Height="20">
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Label Grid.Column="2" Content="{Binding NomeFormatado}" HorizontalContentAlignment="Left"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Row="0" Margin="10,4,10,6">
+                        <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray">
+                            <Label Content="Listas de Sorteio" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="15"/>
+                        </Border>
+                    </Grid>
+                    <Button x:Name="btnSorteioAndamento" Content="Sorteio em Andamento" Margin="0,0,20,0" HorizontalAlignment="Right" Width="150" Height="20" Click="buttonAvancarQuantidades_Click"/>
+                </Grid>
+            </TabItem>
         </TabControl>
+
+        <Image HorizontalAlignment="Left" Height="70" Margin="10,10,0,0" VerticalAlignment="Top" Width="205" Source="Resources/logotipo.jpg"/>
+        <Label Content="{Binding Nome}" Margin="220,10,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontWeight="Bold" HorizontalContentAlignment="Right" Padding="0">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+            </Label.Effect>
+        </Label>
+        <Label x:Name="lblEtapaSorteio" Content="Etapa do Sorteio" Margin="220,48,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontStyle="Italic" HorizontalContentAlignment="Right" Padding="0">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="1" ShadowDepth="1" Opacity="0.1"/>
+            </Label.Effect>
+        </Label>
 
     </Grid>
 </Window>

@@ -143,16 +143,14 @@ namespace Habitasorte {
         }
 
         private void EtapaSorteio(bool ativo) {
+            
             Service.CarregarListas();
             Service.CarregarProximaLista();
-            txtSementePersonalizada.Text = "";
             btnRecuarSorteio.IsEnabled = true;
             btnAvancarSorteio.IsEnabled = VerificarStatus(Status.FINALIZADO);
             grdIniciarSorteio.IsEnabled = VerificarStatus(Status.SORTEIO, Status.SORTEIO_INICIADO);
             grdSorteioEmAndamento.IsEnabled = false;
             lstSorteioListasSorteio.IsEnabled = true;
-            lblSorteioListaAtual.Visibility = Visibility.Hidden;
-            lblSorteioProximaLista.Visibility = Visibility.Visible;
             AlternarTab(tabSorteio, ativo);
         }
 
@@ -362,19 +360,6 @@ namespace Habitasorte {
             }
         }
 
-        private void gridArquivoImportacaoFaixaE(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog fileDialog = new Microsoft.Win32.OpenFileDialog();
-            fileDialog.DefaultExt = ".xlsx";
-            fileDialog.Filter = "Planilha Excel (*.xlsx)|*.xlsx|Planilha Excel 97-2003 (*.xls)|*.xls";
-
-            bool? result = fileDialog.ShowDialog();
-            if (result == true)
-            {
-                txtFaixaE.Text = fileDialog.FileName;
-            }
-        }
-
         private void buttonImportarArquivosFaixas_Click(object sender, RoutedEventArgs e)
         {
 
@@ -387,7 +372,6 @@ namespace Habitasorte {
             string caminhoArquivoFaixaB = txtFaixaB.Text.Contains("\\") ? txtFaixaB.Text : null;
             string caminhoArquivoFaixaC = txtFaixaC.Text.Contains("\\") ? txtFaixaC.Text : null;
             string caminhoArquivoFaixaD = txtFaixaD.Text.Contains("\\") ? txtFaixaD.Text : null;
-            string caminhoArquivoFaixaE = txtFaixaE.Text.Contains("\\") ? txtFaixaE.Text : null;
 
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (wSender, wE) => {
@@ -399,16 +383,14 @@ namespace Habitasorte {
 
                 try
                 {
-                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaA, "Faixa A - 100% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 1, 30, 0);
-                    Service.CriarListasSorteioDeFaixas(null, "Faixa A RESERVA - 100% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 16, 30, 3);
-                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaB, "Faixa B - 75% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 4, 30, 6);
-                    Service.CriarListasSorteioDeFaixas(null, "Faixa B RESERVA - 75% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 19, 30, 9);
-                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaC, "Faixa C - 60% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 7, 30, 12);
-                    Service.CriarListasSorteioDeFaixas(null, "Faixa C RESERVA - 60% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 22, 30, 15);
-                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaD, "Faixa D - 50% de Subsídio - 0 a 5 salários mínimos", updateStatus, updateProgress, 10, 30, 18);
-                    Service.CriarListasSorteioDeFaixas(null, "Faixa D RESERVA - 50% de Subsídio - 0 a 5 salários mínimos", updateStatus, updateProgress, 25, 30, 21);
-                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaE, "Faixa E - 25% de Subsídio - 0 a 7 salários mínimos", updateStatus, updateProgress, 13, 30, 24);
-                    Service.CriarListasSorteioDeFaixas(null, "Faixa E RESERVA - 25% de Subsídio - 0 a 7 salários mínimos", updateStatus, updateProgress, 28, 30, 27);
+                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaA, "Faixa A - 100% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 1, 24, 0, 0, 3);
+                    Service.CriarListasSorteioDeFaixas(null, "Faixa A RESERVA - 100% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 13, 24, 3, 0, 3);
+                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaB, "Faixa B - 75% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 4, 24, 6, 0, 3);
+                    Service.CriarListasSorteioDeFaixas(null, "Faixa B RESERVA - 75% de Subsídio - 0 a 3 salários mínimos", updateStatus, updateProgress, 16, 24, 9, 0, 3);
+                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaC, "Faixa C - 50% de Subsídio - 3 a 5 salários mínimos", updateStatus, updateProgress, 7, 24, 12, 3, 5);
+                    Service.CriarListasSorteioDeFaixas(null, "Faixa C RESERVA - 50% de Subsídio - 3 a 5 salários mínimos", updateStatus, updateProgress, 19, 24, 15, 3, 5);
+                    Service.CriarListasSorteioDeFaixas(caminhoArquivoFaixaD, "Faixa D - 26,31% de Subsídio - 5 a 7 salários mínimos", updateStatus, updateProgress, 10, 24, 18, 5, 7);
+                    Service.CriarListasSorteioDeFaixas(null, "Faixa D RESERVA - 26,31% de Subsídio - 5 a 7 salários mínimos", updateStatus, updateProgress, 22, 24, 21, 5, 7);
 
                     updateStatus("Importação finalizada.");
                 }
@@ -457,11 +439,6 @@ namespace Habitasorte {
             grdIniciarSorteio.IsEnabled = false;
             grdSorteioEmAndamento.IsEnabled = true;
             lstSorteioListasSorteio.IsEnabled = false;
-
-            lblSorteioListaAtual.Visibility = Visibility.Visible;
-            lblSorteioProximaLista.Visibility = Visibility.Hidden;
-
-            txtLogSorteio.Clear();
         }
 
         private void buttonSortearProximaLista_Click(object sender, RoutedEventArgs e) {
@@ -478,7 +455,6 @@ namespace Habitasorte {
             }
 
             BloquearEtapaSorteio();
-
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (wSender, wE) => {
 
@@ -486,18 +462,55 @@ namespace Habitasorte {
 
                 Action<string> updateStatus = (value) => Dispatcher.Invoke(() => { lblStatusSorteio.Content = value; });
                 Action<int> updateProgress = (value) => Dispatcher.Invoke(() => { pgrSorteio.Value = value; });
-                Action<string> logText = (value) => Dispatcher.Invoke(() => {
-                    if (!string.IsNullOrWhiteSpace(txtLogSorteio.Text)) {
-                        txtLogSorteio.AppendText(Environment.NewLine);
+                Action<string, bool> logText = (value, substituir) => Dispatcher.Invoke(() => {
+                    if (substituir)
+                    {
+                        lblNomeSorteado.Content = value;
+                        if (value.Length >= 75)
+                        {
+                            lblNomeSorteado.FontSize = 28;
+                        }
+                        else
+                        {
+                            if (value.Length > 50)
+                            {
+                                lblNomeSorteado.FontSize = 34;
+                            }
+                            else
+                            {
+                                lblNomeSorteado.FontSize = 38;
+                            }
+                        }
                     }
-                    txtLogSorteio.AppendText(value);
-                    txtLogSorteio.ScrollToEnd();
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(txtLogSorteio.Text))
+                        {
+                            int res = 0;
+                            Int32.TryParse(value.Substring(0, 4), out res);
+                            if (res % 2 > 0)
+                            {
+                                txtLogSorteio.AppendText(Environment.NewLine);
+                            }
+                        }
+                        txtLogSorteio.AppendText(value);
+                        txtLogSorteio.ScrollToEnd();
+                    }
                 });
 
-                Service.SortearProximaLista(updateStatus, updateProgress, logText, sementePersonalizada);
+                if (Service.SortearProximaLista(updateStatus, updateProgress, logText, sementePersonalizada))
+                {
+                    DateTime momento = DateTime.Now;
+                    DateTime momentoFinal = DateTime.Now.AddMilliseconds(10000);
+                    while (momento < momentoFinal)
+                    {
+                        momento = DateTime.Now;
+                    }
+                    Dispatcher.Invoke(() => txtLogSorteio.Clear());
+                    processing = false;
+                    
+                }
                 Dispatcher.Invoke(() => EtapaSorteio(true));
-
-                processing = false;
             };
             worker.RunWorkerAsync();
         }
