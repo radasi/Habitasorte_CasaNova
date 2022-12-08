@@ -14,8 +14,10 @@ namespace Habitasorte.Business.Model {
         public int IdLista { get; set; }
         public int OrdemSorteio { get; set; }
         public string Nome { get; set; }
+        public string Candidato { get; set; }
         public bool Sorteada { get; set; }
         public bool Publicada { get; set; }
+        public bool Exibido { get; set; }
 
         private int quantidade;
         public int Quantidade {
@@ -51,6 +53,7 @@ namespace Habitasorte.Business.Model {
         public string VagasText => $"{Quantidade} vagas.";
         public string CandidatosText => $"{CandidatosDisponiveis} candidatos.";
         public string NomeFormatado => String.Format("{0:00} - {1}", OrdemSorteio, Nome);
+        public string CandidatoSorteado => String.Format("{0}", Candidato);
 
         /* IDataErrorInfo */
 

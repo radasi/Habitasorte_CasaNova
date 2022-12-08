@@ -19,8 +19,6 @@ namespace Habitasorte.Business.Model {
         private bool faixaCAtivo;
         private string faixaD;
         private bool faixaDAtivo;
-        private string faixaE;
-        private bool faixaEAtivo;
         private ICollection<Lista> listas;
         private Lista proximaLista;
 
@@ -105,26 +103,6 @@ namespace Habitasorte.Business.Model {
             }
         }
 
-        public string FaixaE
-        {
-            get { return faixaE; }
-            set { SetField(ref faixaE, value); }
-        }
-
-        public bool FaixaEAtivo
-        {
-            get { return faixaEAtivo; }
-            set
-            {
-                SetField(ref faixaEAtivo, value);
-                if (!value)
-                {
-                    faixaE = null;
-                }
-                NotifyPropertyChanged("FaixaE");
-            }
-        }
-
         public ICollection<Lista> Listas {
             get { return listas; }
             set {
@@ -180,7 +158,6 @@ namespace Habitasorte.Business.Model {
             if (columnName == "FaixaB" && FaixaAAtivo && string.IsNullOrWhiteSpace(FaixaB)) return "Faixa B inválida!";
             if (columnName == "FaixaC" && FaixaBAtivo && string.IsNullOrWhiteSpace(FaixaC)) return "Faixa C inválida!";
             if (columnName == "FaixaD" && FaixaCAtivo && string.IsNullOrWhiteSpace(FaixaD)) return "Faixa D inválida!";
-            if (columnName == "FaixaE" && FaixaDAtivo && string.IsNullOrWhiteSpace(FaixaE)) return "Faixa E inválida!";
             return null;
         }}
 
@@ -190,8 +167,7 @@ namespace Habitasorte.Business.Model {
                 && errorInfo["FaixaA"] == null
                 && errorInfo["FaixaB"] == null
                 && errorInfo["FaixaC"] == null
-                && errorInfo["FaixaD"] == null
-                && errorInfo["FaixaE"] == null;
+                && errorInfo["FaixaD"] == null;
         }}
 
         #endregion
