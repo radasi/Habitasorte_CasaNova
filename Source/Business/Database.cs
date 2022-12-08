@@ -26,7 +26,8 @@ namespace Habitasorte.Business {
             string dbFile = ConfigurationManager.AppSettings["ARQUIVO_BANCO"];
             string dbDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string dbPath = $"{dbDirectory}{dbFile}";
-            ConnectionString = $"DataSource=\"{dbPath}\";Max Database Size=4091;Case Sensitive=False;Locale Identifier=1046";
+            //Provider = Microsoft.ACE.OLEDB.12.0; Data Source = ExcelFilePath; Extended Properties = 'Excel 12.0;HRD=YES; IMEX=1;
+            ConnectionString = $"DataSource=\"{dbPath}\";Max Database Size=4091;Case Sensitive=False;Locale Identifier=1046;";
 
             if (!File.Exists(dbPath)) {
                 using (SqlCeEngine engine = new SqlCeEngine(ConnectionString)) {
@@ -118,7 +119,6 @@ namespace Habitasorte.Business {
             string faixaB = CarregarParametro("FAIXA_B");
             string faixaC = CarregarParametro("FAIXA_C");
             string faixaD = CarregarParametro("FAIXA_D");
-            string faixaE = CarregarParametro("FAIXA_E");
 
             return new Sorteio {
                 Nome = CarregarParametro("NOME_SORTEIO"),
@@ -130,9 +130,7 @@ namespace Habitasorte.Business {
                 FaixaC = faixaC,
                 FaixaCAtivo = !String.IsNullOrWhiteSpace(faixaC),
                 FaixaD = faixaD,
-                FaixaDAtivo = !String.IsNullOrWhiteSpace(faixaD),
-                FaixaE = faixaE,
-                FaixaEAtivo = !String.IsNullOrWhiteSpace(faixaE)
+                FaixaDAtivo = !String.IsNullOrWhiteSpace(faixaD)
             };
         }
 
@@ -142,7 +140,6 @@ namespace Habitasorte.Business {
             AtualizarParametro("FAIXA_B", sorteio.FaixaAAtivo ? sorteio.FaixaB : null);
             AtualizarParametro("FAIXA_C", sorteio.FaixaBAtivo ? sorteio.FaixaC : null);
             AtualizarParametro("FAIXA_D", sorteio.FaixaCAtivo ? sorteio.FaixaD : null);
-            AtualizarParametro("FAIXA_E", sorteio.FaixaDAtivo ? sorteio.FaixaE : null);
         }
 
         public void AtualizarStatusSorteio(string status) {
@@ -222,10 +219,11 @@ namespace Habitasorte.Business {
             bulkCopy.ColumnMappings.Add(new SqlCeBulkCopyColumnMapping(4, "LISTA_IDOSOS"));
             bulkCopy.ColumnMappings.Add(new SqlCeBulkCopyColumnMapping(5, "LISTA_SUPER_IDOSOS"));
             bulkCopy.ColumnMappings.Add(new SqlCeBulkCopyColumnMapping(6, "INSCRICAO"));
+            bulkCopy.ColumnMappings.Add(new SqlCeBulkCopyColumnMapping(7, "RENDA_BRUTA"));
             bulkCopy.WriteToServer(dataReader);
         }
 
-        public void CriarListasSorteioPorFaixa(string faixa, Action<string> updateStatus, Action<int> updateProgress, int listaAtual, int totalListas, int incrementoOrdem)
+        public void CriarListasSorteioPorFaixa(string faixa, Action<string> updateStatus, Action<int> updateProgress, int listaAtual, int totalListas, int incrementoOrdem, int rendaMinima, int rendaMaxima)
         {
 
             /* Gera as listas de sorteio por grupo e faixa de renda. */
@@ -236,21 +234,21 @@ namespace Habitasorte.Business {
             updateProgress((int)((++incrementoOrdem / (double)totalListas) * 100));
 
             idUltimaLista = CriarListaSorteioPorGrupoFaixa(faixa, "Idosos", listaAtual);
-            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO WHERE LISTA_IDOSOS = 1");
+            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO WHERE LISTA_IDOSOS = 1 AND RENDA_BRUTA >= {rendaMinima} AND RENDA_BRUTA <= {rendaMaxima}");
             ClassificarListaSorteioIdosos(idUltimaLista);
 
             updateStatus($"Gerando lista {++listaAtual} de {totalListas}.");
             updateProgress((int)((++incrementoOrdem / (double)totalListas) * 100));
 
             idUltimaLista = CriarListaSorteioPorGrupoFaixa(faixa, "Deficientes", listaAtual);
-            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO WHERE LISTA_DEFICIENTES = 1");
+            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO WHERE LISTA_DEFICIENTES = 1 AND RENDA_BRUTA >= {rendaMinima} AND RENDA_BRUTA <= {rendaMaxima}");
             ClassificarListaSorteioSimples(idUltimaLista);
 
             updateStatus($"Gerando lista {++listaAtual} de {totalListas}.");
             updateProgress((int)((++incrementoOrdem / (double)totalListas) * 100));
 
             idUltimaLista = CriarListaSorteioPorGrupoFaixa(faixa, "Geral", listaAtual);
-            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO");
+            ExecuteNonQuery($"INSERT INTO CANDIDATO_LISTA(ID_LISTA, ID_CANDIDATO) SELECT {idUltimaLista}, ID_CANDIDATO FROM CANDIDATO WHERE RENDA_BRUTA >= {rendaMinima} AND RENDA_BRUTA <= {rendaMaxima}");
             ClassificarListaSorteioSimples(idUltimaLista);
         }
 
@@ -389,15 +387,15 @@ namespace Habitasorte.Business {
             }
         }
 
-        public void SortearProximaLista(Action<string> updateStatus, Action<int> updateProgress, Action<string> logText, int? sementePersonalizada = null) {
+        public void SortearCandidatos(Action<string> updateStatus, Action<int> updateProgress, Action<string, bool> logText, int? sementePersonalizada = null) {
 
-            updateStatus("Iniciando sorteio...");
+            //updateStatus("Iniciando sorteio...");
 
             Lista proximaLista = CarregarProximaLista();
             if (proximaLista == null) {
                 throw new Exception("Não existem listas disponíveis para sorteio.");
             }
-
+            bool titular = !proximaLista.Nome.Contains("RESERVA");
             double quantidadeAtual = 0;
             double quantidadeTotal = Math.Min(proximaLista.Quantidade, (int) proximaLista.CandidatosDisponiveis);
 
@@ -434,11 +432,11 @@ namespace Habitasorte.Business {
             commandCandidatosGrupo.Prepare();
 
             GrupoSorteio grupoSorteio = null;
-
+            StringBuilder lista = new StringBuilder();
             for (int i = 1; i <= proximaLista.Quantidade; i++) {
 
                 if (grupoSorteio == null || grupoSorteio.Quantidade < 1) {
-                    updateStatus("Carregando próximo grupo de sorteio.");
+                    //updateStatus("Carregando próximo grupo de sorteio.");
                     using (SqlCeResultSet resultSet = commandGrupoSorteio.ExecuteResultSet(ResultSetOptions.None)) {
                         if (resultSet.Read()) {
                             grupoSorteio = new GrupoSorteio {
@@ -469,11 +467,12 @@ namespace Habitasorte.Business {
                 if (grupoSorteio == null) {
                     break;
                 } else {
-                    updateStatus($"Sorteando entre o grupo de classificação \"{grupoSorteio.Classificacao}\": {quantidadeTotal - quantidadeAtual} vagas restantes.");
+                    //updateStatus($"Sorteando entre o grupo de classificação \"{grupoSorteio.Classificacao}\": {quantidadeTotal - quantidadeAtual} vagas restantes.");
                 }
 
                 int indiceSorteado = (grupoSorteio.Quantidade == 1) ? 0 : random.Next(0, grupoSorteio.Quantidade);
                 CandidatoGrupo candidatoSorteado = grupoSorteio.Candidatos.Skip(indiceSorteado).Take(1).First().Value;
+                candidatoSorteado.Nome = candidatoSorteado.Nome.ToUpper();
                 grupoSorteio.Candidatos.Remove(candidatoSorteado.Sequencia);
 
                 ExecuteNonQuery(
@@ -497,10 +496,162 @@ namespace Habitasorte.Business {
                 quantidadeAtual++;
 
                 updateProgress((int) ((quantidadeAtual / quantidadeTotal) * 100));
-                logText(string.Format("{0:0000} - {1:000'.'000}.***-** - {2} (Inscrição {3})", i, String.Format("{0:00000000000}", candidatoSorteado.Cpf).Substring(0,7), candidatoSorteado.Nome.ToUpper(), candidatoSorteado.IdInscricao.ToString()));
+
             }
 
-            updateStatus("Sorteio da lista " + proximaLista.NomeFormatado + " finalizado!");
+        }
+
+        public Lista SortearProximaLista(Action<string> updateStatus, Action<int> updateProgress, Action<string, bool> logText, int? sementePersonalizada = null)
+        {
+            Lista lista = null;
+            string queryCandidatosNaoExibidos = @"
+                SELECT CANDIDATO_LISTA.SEQUENCIA_CONTEMPLACAO, CANDIDATO.ID_CANDIDATO, CANDIDATO.CPF, CANDIDATO.NOME, CANDIDATO.INSCRICAO, CANDIDATO_LISTA.ID_LISTA
+                FROM CANDIDATO_LISTA INNER JOIN CANDIDATO ON CANDIDATO_LISTA.ID_CANDIDATO = CANDIDATO.ID_CANDIDATO
+                WHERE CANDIDATO_LISTA.SEQUENCIA_CONTEMPLACAO IS NOT NULL AND CANDIDATO.CONTEMPLADO = 1 AND CANDIDATO_LISTA.EXIBIDO = 0
+                ORDER BY CANDIDATO_LISTA.SEQUENCIA_CONTEMPLACAO
+            ";
+            SqlCeCommand commandCandidatosNaoExibidos = CreateCommand(queryCandidatosNaoExibidos);
+            commandCandidatosNaoExibidos.Prepare();
+
+            using (SqlCeResultSet resultSet = commandCandidatosNaoExibidos.ExecuteResultSet(ResultSetOptions.Scrollable))
+            {
+                if (resultSet.HasRows)
+                {
+                    resultSet.Read();
+                    int idLista = resultSet.GetInt32(resultSet.GetOrdinal("ID_LISTA"));
+                    string queryNomeLista = @"
+                        SELECT NOME
+                        FROM LISTA
+                        WHERE ID_LISTA = @ID_LISTA
+                    ";
+                    SqlCeCommand commandNomeLista = CreateCommand(queryNomeLista);
+                    commandNomeLista.Parameters.AddWithValue("ID_LISTA", idLista);
+                    commandNomeLista.Prepare();
+                    SqlCeResultSet resultNomeLista = commandNomeLista.ExecuteResultSet(ResultSetOptions.Scrollable);
+                    resultNomeLista.Read();
+                    string nomeLista = resultNomeLista.GetString(resultNomeLista.GetOrdinal("NOME"));
+                    int qtdCandidatos = CandidatosDisponiveisLista(idLista);
+                    updateStatus("Sorteando lista " + nomeLista + " - " + qtdCandidatos + " candidatos");
+                    CandidatoGrupo candidatoSorteado = new CandidatoGrupo
+                    {
+                        Sequencia = resultSet.GetInt32(resultSet.GetOrdinal("SEQUENCIA_CONTEMPLACAO")),
+                        IdCandidato = resultSet.GetInt32(resultSet.GetOrdinal("ID_CANDIDATO")),
+                        Cpf = resultSet.GetString(resultSet.GetOrdinal("CPF")),
+                        Nome = resultSet.GetString(resultSet.GetOrdinal("NOME")),
+                        IdInscricao = resultSet.GetInt32(resultSet.GetOrdinal("INSCRICAO"))
+                    };
+                    ExibirSorteado(candidatoSorteado, idLista, logText);
+                    if (nomeLista.Contains("RESERVA") || sementePersonalizada != null)
+                    {
+                        while (resultSet.Read())
+                        {
+                            candidatoSorteado = new CandidatoGrupo
+                            {
+                                Sequencia = resultSet.GetInt32(resultSet.GetOrdinal("SEQUENCIA_CONTEMPLACAO")),
+                                IdCandidato = resultSet.GetInt32(resultSet.GetOrdinal("ID_CANDIDATO")),
+                                Cpf = resultSet.GetString(resultSet.GetOrdinal("CPF")),
+                                Nome = resultSet.GetString(resultSet.GetOrdinal("NOME")),
+                                IdInscricao = resultSet.GetInt32(resultSet.GetOrdinal("INSCRICAO"))
+                            };
+                            ExibirSorteado(candidatoSorteado, idLista, logText);
+                        }
+                        updateStatus("Sorteio Lista " + nomeLista + " finalizado!");
+                        lista = new Lista { IdLista = idLista, Nome = nomeLista };
+                    }
+                    else
+                    {
+                        if (resultSet.Read() == false)
+                        {
+                            updateStatus("Sorteio Lista " + nomeLista + " finalizado!");
+                            lista = new Lista { IdLista = idLista, Nome = nomeLista };
+                        }
+                    }
+                    resultNomeLista.Close();
+                }
+                else
+                {
+                    SortearCandidatos(updateStatus, updateProgress, logText, sementePersonalizada);
+                    lista = SortearProximaLista(updateStatus, updateProgress, logText, sementePersonalizada); //VER
+                    if (lista != null)
+                    {
+                        int qtdCandidatos = CandidatosDisponiveisLista(lista.IdLista);
+                        updateStatus("Sorteio Lista " + lista.Nome + " - " + qtdCandidatos + " candidatos");
+                    }
+                }
+                resultSet.Close();
+            }
+            return lista;
+        }
+
+        public void ExibirSorteado(CandidatoGrupo candidatoSorteado, int idLista, Action<string, bool> logText)
+        {
+            string nomeSorteado = string.Format("{0:0000} - ***.{1}-** - {2} (Inscrição {3})", candidatoSorteado.Sequencia, candidatoSorteado.Cpf.Substring(4, 7), candidatoSorteado.Nome.ToUpper(), candidatoSorteado.IdInscricao.ToString());
+            int indice = 0;
+            int pos = nomeSorteado.Length;
+            DateTime momento = DateTime.Now;
+            DateTime momentoFinal = DateTime.Now.AddMilliseconds(5000);
+
+            int posNome = candidatoSorteado.Nome.Length;
+            string nomeDecifrar = candidatoSorteado.Nome;
+
+            bool concluido = false;
+            string complemento = "zmylxkwjviuhtgsfreqdpcobna";
+            nomeDecifrar = nomeDecifrar.ToLower() + complemento;
+            posNome = nomeDecifrar.Length;
+            while (!concluido)
+            {
+                indice = 0;
+                int trecho = 0;
+                while (indice < posNome)
+                {
+                    trecho = posNome - indice - 1;
+                    if (nomeDecifrar[indice] != ' ')
+                    {
+                        nomeDecifrar = nomeDecifrar.Substring(0, indice) + (char)((int)nomeDecifrar[indice] - 1) + nomeDecifrar.Substring(indice + 1, trecho);
+                    }
+                    indice++;
+                }
+
+                logText(nomeDecifrar, true);
+
+                if (String.IsNullOrWhiteSpace(nomeDecifrar))
+                {
+                    nomeDecifrar = candidatoSorteado.Nome;
+                }
+
+                if (nomeDecifrar.TrimEnd() == candidatoSorteado.Nome)
+                {
+                    concluido = true;
+                }
+
+                momento = DateTime.Now;
+                momentoFinal = DateTime.Now.AddMilliseconds(50);
+                while (momento < momentoFinal)
+                {
+                    momento = DateTime.Now;
+                }
+                indice++;
+            }
+
+            logText(string.Format("***.{0:000'.'000}-** - {1} - {2}", String.Format("{0:00000000000}", candidatoSorteado.Cpf.Substring(4, 7)), candidatoSorteado.Nome.ToUpper(), candidatoSorteado.IdInscricao.ToString()), true);
+
+            momento = DateTime.Now;
+            momentoFinal = DateTime.Now.AddMilliseconds(3000);
+            while (momento < momentoFinal)
+            {
+                momento = DateTime.Now;
+            }
+
+            logText(CompletarNome(nomeSorteado), false);
+            ExecuteNonQuery(
+                @"
+                        UPDATE CANDIDATO_LISTA
+                        SET EXIBIDO = 1
+                        WHERE ID_CANDIDATO = @ID_CANDIDATO AND ID_LISTA = @ID_LISTA
+                    ",
+                new SqlCeParameter("ID_CANDIDATO", candidatoSorteado.IdCandidato),
+                new SqlCeParameter("ID_LISTA", idLista)
+            );
         }
 
         private int ObterSemente(ref string fonteSemente) {
@@ -524,6 +675,24 @@ namespace Habitasorte.Business {
             } else {
                 return (int) semente;
             }
+        }
+
+        private string CompletarNome(string nome)
+        {
+            int res = 0;
+            Int32.TryParse(nome.Substring(0, 4), out res);
+            if (res % 2 > 0)
+            {
+                if (nome.Count() <= 94)
+                {
+                    string espacos = "                                                                                              ";
+                    return String.Concat(nome, espacos.Substring(0, 94 - nome.Count()));
+                }
+            } else
+            {
+                return String.Concat("|", nome);
+            }
+            return nome;
         }
 
         public static string DiretorioExportacaoCSV => $"{AppDomain.CurrentDomain.BaseDirectory}CSV";

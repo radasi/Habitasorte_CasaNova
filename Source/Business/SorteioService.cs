@@ -39,7 +39,7 @@ namespace Habitasorte.Business {
                         action(database);
                         tx.Commit();
                     } catch(Exception e) {
-                        try { tx.Rollback(); } catch { }
+                        try     { tx.Rollback(); } catch { }
                         throw;
                     }
                 }
@@ -101,7 +101,7 @@ namespace Habitasorte.Business {
             });
         }
 
-        public void CriarListasSorteioDeFaixas(string arquivoImportacao, string faixa, Action<string> updateStatus, Action<int> updateProgress, int listaAtual, int totalListas, int incremento)
+        public void CriarListasSorteioDeFaixas(string arquivoImportacao, string faixa, Action<string> updateStatus, Action<int> updateProgress, int listaAtual, int totalListas, int incremento, int rendaMinima, int rendaMaxima)
         {
             if (arquivoImportacao != null)
             {
@@ -117,26 +117,44 @@ namespace Habitasorte.Business {
                 });
             }
             Execute(d => {
-                d.CriarListasSorteioPorFaixa(faixa, updateStatus, updateProgress, listaAtual, totalListas, incremento);
+                d.CriarListasSorteioPorFaixa(faixa, updateStatus, updateProgress, listaAtual, totalListas, incremento, rendaMinima, rendaMaxima);
                 AtualizarStatusSorteio(d, Status.QUANTIDADES);
             });
         }
 
         private IExcelDataReader CreateExcelReader(string arquivoImportacao, Stream stream) {
-            return (arquivoImportacao.ToLower().EndsWith(".xlsx") || arquivoImportacao.ToLower().EndsWith(".xls")) ?
+            return (arquivoImportacao.ToLower().EndsWith(".xlsx") || arquivoImportacao.ToLower().EndsWith(".oldxls")) ?
                 ExcelReaderFactory.CreateOpenXmlReader(stream) : ExcelReaderFactory.CreateBinaryReader(stream);
         }
 
-        public void SortearProximaLista(Action<string> updateStatus, Action<int> updateProgress, Action<string> logText, int? sementePersonalizada = null) {
+        public bool SortearProximaLista(Action<string> updateStatus, Action<int> updateProgress, Action<string, bool> logText, int? sementePersonalizada = null) {
+            Lista listaSorteada = null;
+            Lista listaAtual = new Lista { IdLista = model.ProximaLista.IdLista };
             Execute(d => {
-                d.SortearProximaLista(updateStatus, updateProgress, logText, sementePersonalizada);
-                if (Model.StatusSorteio == Status.SORTEIO) {
-                    AtualizarStatusSorteio(d, Status.SORTEIO_INICIADO);
-                }
-                if (d.CarregarProximaLista() == null) {
-                    AtualizarStatusSorteio(d, Status.FINALIZADO);
+                listaSorteada = d.SortearProximaLista(updateStatus, updateProgress, logText, sementePersonalizada);
+                if (listaSorteada != null)
+                {
+                    if (Model.StatusSorteio == Status.SORTEIO)
+                    {
+                        AtualizarStatusSorteio(d, Status.SORTEIO_INICIADO);
+                    }
+                    if (d.CarregarProximaLista() == null)
+                    {
+                        AtualizarStatusSorteio(d, Status.FINALIZADO);
+                    }
                 }
             });
+            //VER
+            if (listaSorteada != null)
+            {
+                string diretorioListas = "C:\\HabitaSorte_CasaNova2.2\\";
+                if (!Directory.Exists(diretorioListas))
+                {
+                    Directory.CreateDirectory(diretorioListas);
+                }
+                SalvarLista(listaSorteada, (String.Concat(diretorioListas, listaSorteada.Nome.Split('%')[0], ".pdf")));
+            }
+            return listaSorteada != null;
         }
 
         public string DiretorioExportacaoCSV => Database.DiretorioExportacaoCSV;
